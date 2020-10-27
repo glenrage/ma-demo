@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "homepage": "https://glenrage.github.io/ma-demo",
+  "homepage": "http://glenrage.github.io/ma-demo",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
