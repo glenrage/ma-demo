@@ -14,7 +14,7 @@ function App() {
   return (
     <div className={classes.root}>
       <Container maxWidth='xl'>
-        <h1>hello Media Alpha</h1>
+        <h1>Hello Media Alpha</h1>
         <MainForm />
       </Container>
     </div>
