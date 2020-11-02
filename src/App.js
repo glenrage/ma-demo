@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import Layout from './components/Layout'
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import { makeStyles } from '@material-ui/core/styles';
+import MainForm from './components/MainForm'
+
+const useStyles = makeStyles(() => ({
+  // root: {
+  //   backgroundColor: '#ffff',
+  //   margin: '10px',
+  //   display: 'flex',
+  //   flexDirection: 'row',
+  //   justifyContent: 'center',
+  // },
+}));
 
 function App() {
+  const classes = useStyles();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={classes.root}>
+      <Container maxWidth='xl'>
+        <h1>hello Media Alpha</h1>
+        <MainForm />
+      </Container>
     </div>
   );
 }
