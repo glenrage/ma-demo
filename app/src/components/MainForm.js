@@ -1,10 +1,6 @@
 /* eslint-disable no-unused-expressions */
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import * as Yup from 'yup';
 import { FormControlLabel, Checkbox } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import ClassSelect from './ClassSelect';
@@ -12,17 +8,6 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FolderIcon from '@material-ui/icons/Folder';
-import AddIcon from '@material-ui/icons/Add';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import PreviewForm from './PreviewForm';
@@ -35,19 +20,13 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: '500px',
+    marginLeft: '5px',
   },
-  errorBox: {
-    marginRight: '1px',
-    marginLeft: '1px',
+  previewButton: {
+    margin: '5px',
   },
-  field: {
-    width: '300px',
-    height: '35px',
-    border: '1px solid #ccc',
-    backgroundColor: '#fff',
-  },
-  formLeft: {
-    paddingLeft: theme.spacing(1),
+  cancelButton: {
+    margin: '5px',
   },
   textField: {
     width: '245px',
@@ -80,22 +59,38 @@ function MainForm() {
     email: 'email@email.com',
     birthday: '',
     schedule: [],
+    birthMonth: '',
+    birthDay: '',
+    birthYear: '',
   });
+
+  const {
+    sportsCheck,
+    artCheck,
+    literatureCheck,
+    musicCheck,
+  } = subject.subjects;
+
+  const emailError = !/\S+@\S+\.\S+/.test(userData.email);
+  const showSubmit =
+    !emailError && !showYearError && !showMonthError && !showDayError;
 
   const handleTextChange = (e) => {
     const {
       target: { name, value },
     } = e;
-
     if (name === 'birthMonth') {
       const validBirthday = validateBirthday(name, value);
       !validBirthday ? setShowMonthError(true) : setShowMonthError(false);
+      setUserData({ ...userData, [name]: value });
     } else if (name === 'birthDay') {
       const validBirthday = validateBirthday(name, value);
       !validBirthday ? setShowDayError(true) : setShowDayError(false);
+      setUserData({ ...userData, [name]: value });
     } else if (name === 'birthYear') {
       const validBirthday = validateBirthday(name, value);
       !validBirthday ? setShowYearError(true) : setShowYearError(false);
+      setUserData({ ...userData, [name]: value });
     } else {
       setUserData({ ...userData, [name]: value });
     }
@@ -119,11 +114,11 @@ function MainForm() {
       });
       return;
     }
-
     if (currentSchedule.length >= 1) {
       const shouldAddSchedule = checkValidDates(userData.schedule, value);
-
-      shouldAddSchedule ? currentSchedule.push(value) : null
+      shouldAddSchedule
+        ? currentSchedule.push(value)
+        : setShowScheduleError(true);
     }
     setUserData({
       ...userData,
@@ -131,7 +126,8 @@ function MainForm() {
     });
   };
 
-  const handleReset = () => {
+  const handleReset = (e) => {
+    e.preventDefault();
     setSubject({
       subjects: {
         sportsCheck: false,
@@ -141,38 +137,38 @@ function MainForm() {
       },
     });
     setUserData({
-      ...userData,
-      schedule: [],
       name: '',
-      email: '',
+      email: 'email@email.com',
       birthday: '',
+      schedule: [],
+      birthMonth: '',
+      birthDay: '',
+      birthYear: '',
     });
+    setShowScheduleError(false);
+    setShowYearError(false);
+    setShowMonthError(false);
+    setShowMonthError(false);
+    setShouldRender(false);
   };
 
-  function handleSubmit() {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const { birthMonth, birthDay, birthYear } = userData;
+    const bday = `${birthMonth}/${birthDay}/${birthYear}`;
+
+    if (userData.schedule.length === 0) setShowScheduleError(true);
 
     setUserData({
       ...userData,
-      birthday: `${birthMonth}/${birthDay}/${birthYear}`,
+      birthday: bday,
     });
     setShouldRender(true);
-  }
-
-  console.log('u data', userData);
-
-  const {
-    sportsCheck,
-    artCheck,
-    literatureCheck,
-    musicCheck,
-  } = subject.subjects;
-
-  const emailError = /\S+@\S+\.\S+/.test(userData.email);
+  };
 
   return (
     <div className={classes.root}>
-      <form className={classes.form} autoComplete='off'>
+      <form className={classes.form} onSubmit={handleSubmit} autoComplete='off'>
         <Grid container>
           <Grid item md={4}>
             <TextField
@@ -182,7 +178,7 @@ function MainForm() {
               label='Name'
               variant='outlined'
               name='name'
-              defaultValue='Name'
+              value={userData.name}
             />
             <TextField
               className={classes.textField}
@@ -191,8 +187,9 @@ function MainForm() {
               onChange={handleTextChange}
               label='Email Address'
               variant='outlined'
-              error={!emailError}
-              helperText={!emailError ? 'Invalid Email address' : null}
+              error={emailError}
+              helperText={emailError ? 'Invalid Email address' : null}
+              value={userData.email}
             />
           </Grid>
 
@@ -201,43 +198,52 @@ function MainForm() {
               className={classes.birthdayField}
               onChange={handleTextChange}
               label='Month'
-              defaultValue='01'
               variant='outlined'
               name='birthMonth'
+              required
               error={showMonthError}
               helperText={showMonthError ? 'Invalid Month' : null}
+              value={userData.birthMonth}
             />
             <TextField
               className={classes.birthdayField}
               onChange={handleTextChange}
               label='Day'
-              defaultValue='01'
+              required
               variant='outlined'
               name='birthDay'
               error={showDayError}
               helperText={showDayError ? 'Invalid Day' : null}
+              value={userData.birthDay}
             />
             <TextField
+              required
               className={classes.birthdayField}
               onChange={handleTextChange}
               label='Year'
-              defaultValue='1980'
               variant='outlined'
               name='birthYear'
               error={showYearError}
               helperText={showYearError ? ' Invalid Year' : null}
+              value={userData.birthYear}
             />
           </Grid>
 
           <FormControl component='fieldset' error={showScheduleError}>
             <FormLabel component='legend'>Select Classes</FormLabel>
+
             {showScheduleError && (
               <FormHelperText>
-                Only 1 class per area or scheduling conflict
+                Scheduling conflict! Please select a class or reset form and try
+                again
               </FormHelperText>
             )}
 
             <FormGroup>
+              <FormHelperText>
+                You may select 1 class per area of study. Please ensure class
+                dates do not overlap
+              </FormHelperText>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -315,35 +321,27 @@ function MainForm() {
           </FormControl>
         </Grid>
         <Button
-          className={classes.button}
+          className={classes.cancelButton}
           onClick={handleReset}
-          type='submit'
           variant='outlined'
-          color='primary'
+          color='secondary'
         >
-          Cancel
+          Reset
         </Button>
         <Button
-          className={classes.button}
-          onClick={handleSubmit}
-          type='submit'
+          className={classes.previewButton}
+          // onClick={handleSubmit}
           variant='outlined'
           color='primary'
-          disabled={!showScheduleError && !showYearError && !showMonthError && !showMonthError}
+          disabled={!showSubmit}
+          type='submit'
         >
-          Confirm
+          Preview
         </Button>
       </form>
       <PreviewForm data={userData} shouldRender={shouldRender} />
     </div>
   );
 }
-
-MainForm.propTypes = {
-  /**
-   * Function to close modal .
-   */
-  // onClose: PropTypes.string,
-};
 
 export default MainForm;
