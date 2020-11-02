@@ -15,6 +15,7 @@ export const validateBirthday = (input, value) => {
     const hasDuplicates = schedule.filter((item) => {
       return item.slug.slice(0, 3) === course.slug.slice(0, 3);
     });
+
     if (hasDuplicates.length !== 0) return false;
 
     for (let i = 0; i < schedule.length; i++) {
