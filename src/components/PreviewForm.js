@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -43,18 +43,26 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(4),
   },
   button: {
-    display: 'flex',
-    marginLeft: 'auto',
+    float: 'right',
     margin: '5px',
   },
 }));
 
 function PreviewForm({ data, shouldRender }) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const [downloadFile, setDownloadFile] = useState(true);
 
   const handleClick = () => {
     setOpen(!open);
+  };
+
+  const handleDownload = () => {
+    const downloadData = `text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(data)
+    )}`;
+
+    setDownloadFile(downloadData);
   };
 
   return (
@@ -131,15 +139,18 @@ function PreviewForm({ data, shouldRender }) {
                 <Box className={classes.spacing} />
               </Grid>
             </List>
+            <Button
+              size='small'
+              onClick={handleDownload}
+              className={classes.button}
+              variant='outlined'
+              color='primary'
+              href={`data: ${downloadFile}`}
+              download='data.json'
+            >
+              Download JSON
+            </Button>
           </Box>
-          <Button
-            onClick={handleDownload}
-            className={classes.button}
-            variant='outlined'
-            color='primary'
-          >
-            Download JSON data
-          </Button>
         </>
       )}
     </div>
