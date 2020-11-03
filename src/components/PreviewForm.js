@@ -124,8 +124,8 @@ function PreviewForm({ data, shouldRender }) {
                     <List>
                       {data.schedule.map((item) => {
                         return (
-                          <ListItem button className={classes.nested}>
-                            <Grid direction='row' item md={10}>
+                          <ListItem key={item.slug} button className={classes.nested}>
+                            <Grid item md={10}>
                               <Typography variant='h6'>{item.name}</Typography>
                             </Grid>
 
