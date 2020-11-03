@@ -63,6 +63,7 @@ function MainForm() {
     birthDay: '',
     birthYear: '',
   });
+  console.log('a', userData)
 
   const {
     sportsCheck,
@@ -141,9 +142,6 @@ function MainForm() {
       email: 'email@email.com',
       birthday: '',
       schedule: [],
-      birthMonth: '',
-      birthDay: '',
-      birthYear: '',
     });
     setShowScheduleError(false);
     setShowYearError(false);
@@ -196,7 +194,7 @@ function MainForm() {
             />
           </Grid>
 
-          <Grid item md={12} direction='row'>
+          <Grid item md={12}>
             <TextField
               className={classes.birthdayField}
               onChange={handleTextChange}
@@ -206,7 +204,6 @@ function MainForm() {
               required
               error={showMonthError}
               helperText={showMonthError ? 'Invalid Month' : null}
-              value={userData.birthMonth}
             />
             <TextField
               className={classes.birthdayField}
@@ -217,7 +214,6 @@ function MainForm() {
               name='birthDay'
               error={showDayError}
               helperText={showDayError ? 'Invalid Day' : null}
-              value={userData.birthDay}
             />
             <TextField
               required
@@ -228,7 +224,6 @@ function MainForm() {
               name='birthYear'
               error={showYearError}
               helperText={showYearError ? ' Invalid Year' : null}
-              value={userData.birthYear}
             />
           </Grid>
 
@@ -333,7 +328,6 @@ function MainForm() {
         </Button>
         <Button
           className={classes.previewButton}
-          // onClick={handleSubmit}
           variant='outlined'
           color='primary'
           disabled={!showSubmit}
