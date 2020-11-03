@@ -162,6 +162,9 @@ function MainForm() {
     setUserData({
       ...userData,
       birthday: bday,
+      birthMonth: undefined,
+      birthDay: undefined,
+      birthYear: undefined,
     });
     setShouldRender(true);
   };

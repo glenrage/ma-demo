@@ -133,11 +133,12 @@ function PreviewForm({ data, shouldRender }) {
             </List>
           </Box>
           <Button
+            onClick={handleDownload}
             className={classes.button}
             variant='outlined'
             color='primary'
           >
-            Submit
+            Download JSON data
           </Button>
         </>
       )}
